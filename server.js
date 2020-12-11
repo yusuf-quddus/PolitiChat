@@ -8,9 +8,13 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 
-const rooms = { }
+const rooms = {}
+const topics = {'Gun Control': {}, 'Abortion': {}, 'Free Speech': {}}
 
 app.get('/', (req, res) => {
+  for(let topic in topics) {
+    rooms[topic] = { users: {} }
+  }
   res.render('index', { rooms: rooms })
 })
 
