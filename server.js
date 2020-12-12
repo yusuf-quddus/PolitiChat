@@ -12,15 +12,12 @@ app.use(express.urlencoded({ extended: true }))
 
 const rooms = {}
 const topics = {'Gun Control': {}, 'Abortion': {}, 'Free Speech': {}}
-const MAX = 3
-const empty = {}
+const MAX = 2
 
-var numUsers = {}
 
 app.get('/', (req, res) => {
   for(let topic in topics) {
     rooms[topic] = { users: {} }
-    empty[topic] = true
   }
   res.render('index', { rooms: rooms })
 })
@@ -40,12 +37,50 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  if(1 <= MAX){
+  var clients = io.sockets.adapter.rooms[room]
+  if (clients == undefined) {
+    res.render('room', { roomName: req.params.room })
+  }
+  else {
+    console.log("passing1")
+    if(clients.length + 1 <= MAX) {
+      res.render('room', { roomName: req.params.room })
+    }
+    else {
+      console.log("passing2")
+      room_num = room
+      clients = io.sockets.adapter.rooms[room]
+      if (clients.length + 1 > MAX) {
+        console.log("passing3")
+        room_num = room_num + 1
+        clients = io.sockets.adapter.rooms[room_num]
+        if (clients == undefined) {
+          rooms[room_num] = { users: {} } 
+          console.log("passing4")
+          // res.render('room', { roomName: room_num })
+          res.redirect(room_num)
+        }
+        else {
+          rooms[room_num] = { users: {} } 
+          //res.render('room', { roomName: room_num })
+          console.log("passing4")
+          res.redirect(room_num)
+        }
+      }
+    }
+  }
+/*
+  var clients = io.sockets.adapter.rooms[room]
+  if(clients != undefined) {
+    console.log("Http " + clients.length)
+  }
+  if(1 <= MAX) {
     res.render('room', { roomName: req.params.room })
   }
   else {
     console.log("fail")
   }
+  */
 })
 
 server.listen(3000)
@@ -57,14 +92,12 @@ io.on('connection', socket => {
       console.log("in empty if")
       socket.join(room)
       rooms[room].users[socket.id] = name
-      empty[room] = false
       socket.to(room).broadcast.emit('user-connected', name)
       console.log("Max is " + MAX)
       var clients = io.sockets.adapter.rooms[room]
       console.log("Number of users is " + clients.length)
     }
     else {
-     // var clients = io.sockets.adapter.rooms[room]
       if(clients.length + 1 <= MAX) {
         console.log("people in room")
         socket.join(room)
@@ -74,7 +107,30 @@ io.on('connection', socket => {
         console.log("Number of users is " + clients.length)
       }
       else {
-      console.log("fail io")
+        console.log("failing3")
+        room_num = room
+        clients = io.sockets.adapter.rooms[room]
+        while (clients.length + 1 > MAX) {
+          console.log("io while")
+          room_num = room_num + 1
+          clients = io.sockets.adapter.rooms[room_num]
+          if (client == undefined)
+            break;
+        }
+        if (clients == undefined) {
+          console.log("failing2")
+          rooms[room_num] = { users: {} } 
+          socket.join(room_num)
+          rooms[room_num].users[socket.id] = name
+          socket.to(room_num).broadcast.emit('user-connected', name)
+        }
+        else {
+         console.log("failing")
+        socket.join(room_num)
+        rooms[room_num].users[socket.id] = name
+        socket.to(room_num).broadcast.emit('user-connected', name)
+        }
+
       }
     }
   })
