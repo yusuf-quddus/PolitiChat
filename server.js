@@ -11,13 +11,33 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 
 const rooms = {}
-const topics = {'Gun Control': {}, 'Abortion': {}, 'Free Speech': {}}
+const topics = {
+     'Gun Control': {
+      thumbnail: "https://www.nbc12.com/resizer/gTz6yLmYp-5Eyr7rlFCDQz4K6h0=/1200x0/arc-anglerfish-arc2-prod-raycom.s3.amazonaws.com/public/RSZP5LNGTBFB3CIWDH4RX4FOM4.jpg"
+  }, 'Abortion': {
+      thumbnail: 'https://www.pewresearch.org/wp-content/uploads/2019/06/FT_19.06.07_southernBaptists.jpg'
+  }, 'Free Speech': {
+      thumbnail: 'https://cdn.vox-cdn.com/thumbor/FYANSSjCDz5O4DXNLRXRq9OVsDM=/1400x1050/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/14257219/shutterstock_568689847.jpg'
+  },
+   'Immigration': {
+    thumbnail: "https://cdn.givingcompass.org/wp-content/uploads/2019/04/10102748/New-Evidence-That-Immigration-Is-Good-for-America.jpg"
+  }, 'Trade Policy': {
+    thumbnail: 'https://s3.amazonaws.com/blog.v-comply.com/wp-content/uploads/2017/08/23165113/foreign-trade-policy.jpg'
+  }, 'Black Lives Matter': {
+    thumbnail: 'https://carrcenter.hks.harvard.edu/files/cchr/files/protest_01_03.png?m=1594152902'
+  }, 'Religion': {
+    thumbnail: "https://www.irishtimes.com/polopoly_fs/1.2930235.1483971415!/image/image.jpg_gen/derivatives/box_620_330/image.jpg"
+  }, 'Iraq War': {
+    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/3/34/A_joint_special_forces_team_moves_together_out_of_an_Air_Force_CV-22_Osprey_aircraft%2C_Feb._26%2C_2018.jpg"
+  }
+}
 const MAX = 2
 
 
 app.get('/', (req, res) => {
   for(let topic in topics) {
     rooms[topic] = { users: {} }
+    console.log(topic)
   }
   res.render('index', { rooms: topics })
 })

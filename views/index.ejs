@@ -7,13 +7,63 @@
   <title>Chat App</title>
   <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
   <script defer src="script.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+   crossorigin="anonymous">
+   <style> 
+    .flex-container {
+      display: flex;
+   flex-wrap: wrap;
+   justify-content: space-between;
+    }
+    .card {
+      flex: 0 1 24%;
+   } 
+  </style>
 </head>
 <body>
+
+  <section id="blog">
+    <div class="container">
+            
+         <div class="row">
+             <div class="col-lg-6 col-lg-offset-3 text-center">  
+                 <h2>
+                     <span class="ion-minus"></span>Blog Posts<span class="ion-minus"></span>
+                 </h2>
+                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis  dis parturient montes, nascetur ridiculus </p><br>
+             </div> 
+          </div>  
+                 
+     <div class="row">
+      <div class="item active">
+        <div class="row">
+          <div id="room-container" class="flex-container">
+            <% Object.entries(rooms).forEach(([room, thumbnail]) => { %>
+              <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 card">
+                <div class="card text-center">
+                <img class="card-img-top" src = "<%= `${thumbnail.thumbnail}` %>" alt="" width="100%">
+                <div class="card-block">
+                  <h4 class="card-title"><%= room %></h4>
+                  <p class="card-text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.</p>
+                  <a class="btn btn-default" href="/<%= room %>">Join</a>
+                </div>
+                </div>
+              </div>
+             <% }) %>
+          </div>      
+         </div>
+       </div>
+     </div>    
+   </div>
+ </section>
+</body>
+</html>
+
+  <!-- 
   <div id="room-container">
     <% Object.keys(rooms).forEach(room => { %>
       <div><%= room %></div>
       <a href="/<%= room %>">Join</a>
     <% }) %>
-  </div>
-</body>
-</html>
+    </div>
+    -->
