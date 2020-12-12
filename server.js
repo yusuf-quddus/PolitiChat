@@ -19,17 +19,7 @@ app.get('/', (req, res) => {
   for(let topic in topics) {
     rooms[topic] = { users: {} }
   }
-  res.render('index', { rooms: rooms })
-})
-
-app.post('/room', (req, res) => {
-  if (rooms[req.body.room] != null) {
-    return res.redirect('/')
-  }
-  rooms[req.body.room] = { users: {} }
-  res.redirect(req.body.room)
-  // Send message that new room was created
-  io.emit('room-created', req.body.room)
+  res.render('index', { rooms: topics })
 })
 
 app.get('/:room', (req, res) => {
@@ -52,7 +42,7 @@ app.get('/:room', (req, res) => {
       clients = io.sockets.adapter.rooms[room]
       if (clients.length + 1 > MAX) {
         console.log("passing3")
-        room_num = room_num + 1
+        room_num = room_num + io.engine.clientsCount
         clients = io.sockets.adapter.rooms[room_num]
         if (clients == undefined) {
           rooms[room_num] = { users: {} } 
@@ -112,7 +102,7 @@ io.on('connection', socket => {
         clients = io.sockets.adapter.rooms[room]
         while (clients.length + 1 > MAX) {
           console.log("io while")
-          room_num = room_num + 1
+          room_num = room_num + io.engine.clientsCount
           clients = io.sockets.adapter.rooms[room_num]
           if (client == undefined)
             break;

@@ -18,6 +18,7 @@ if (messageForm != null) {
   })
 }
 
+/* 
 socket.on('room-created', room => {
   const roomElement = document.createElement('div')
   roomElement.innerText = room
@@ -27,6 +28,7 @@ socket.on('room-created', room => {
   roomContainer.append(roomElement)
   roomContainer.append(roomLink)
 })
+*/
 
 socket.on('chat-message', data => {
   appendMessage(`${data.name}: ${data.message}`)
